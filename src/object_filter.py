@@ -4,18 +4,19 @@ import os
 
 import imutils
 
+from inOut import OutputFormer
 from src.detection import people_detector
 from src.inOut.InputReader import InputReader
 
-CONFIG_PATH = 'C:/Users/User/PycharmProjects/videoFilter/resources'
+CONFIG_PATH = 'C:/Users/Inna/PycharmProjects/videoFilter/resources'
 
-def create_inputs():
-    global inputs
-    inputs = [InputReader(filename) for filename in glob.glob(os.path.join(CONFIG_PATH, '*.txt'))]
 
-def get_one_decision(params):
 
+def get_one_decision(inp):
+    vs, fps = inp.get_video_stream()
+    output = OutputFormer.OutputFormer()
     # loop over the frames from the video stream
+    i = 0
     while (vs.isOpened()):
         # grab the frame from the video stream
         ret, frame = vs.read()
@@ -23,8 +24,9 @@ def get_one_decision(params):
         if ret:
             # and resize it to have a maximum width of 400 pixels
             frame = imutils.resize(frame, width=min(400, frame.shape[1]))
-            picks, image = people_detector.detect(frame, params)
-
+            picks, image = people_detector.detect(frame, inp.params)
+            if len(picks) != 0: output.add_pict(image, picks, i)
+            del image
 
             # Press Q on keyboard to  exit
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -33,9 +35,18 @@ def get_one_decision(params):
         else:
             break
 
+        if output.writer is not None:
+            output.writer.write(frame)
+        i += 1
+        fps.update()
+        del frame
+
+    vs.release()
+    cv2.destroyAllWindows()
 
 
-create_inputs()
-vs, fps = InputReader.get_video_stream()
+inputs = [InputReader(filename) for filename in glob.glob(os.path.join(CONFIG_PATH, '*.txt'))]
+for inp in inputs:
+    get_one_decision(inp)
 
 

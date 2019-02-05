@@ -1,0 +1,4 @@
+winStride = (4, 4)
+padding = (8, 8)
+scale = 1.05
+confidence = 0.2

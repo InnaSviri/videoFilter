@@ -1,5 +1,5 @@
 import re
-
+from ast import literal_eval as make_tuple
 
 class Params:
 
@@ -14,21 +14,18 @@ class Params:
             reg_match = _RegExLib(line)
 
             if reg_match.winStride:
-                winStride_arr = reg_match.winStride.group(1).split(',')
-                winStride = (int(winStride_arr[0]), int(winStride_arr[1]))
-
+                self.winStride = make_tuple(reg_match.winStride.group(1))
 
             if reg_match.padding:
-                padding_arr = reg_match.padding.group(1).split(',')
-                padding = (int(padding_arr[0]), int(padding_arr[1]))
+                self.padding = make_tuple(reg_match.padding.group(1))
 
             if reg_match.scale:
                 scale_str = reg_match.scale.group(1)
-                scale = float(scale_str)
+                self.scale = float(scale_str)
 
             if reg_match.confidence:
                 confidence_str = reg_match.confidence.group(1)
-                confidence = float(confidence_str)
+                self.confidence = float(confidence_str)
 
             line = next(file, None)
 
@@ -41,7 +38,7 @@ class _RegExLib:
     _reg_scale = re.compile(r'scale =(.*)\n')
     _reg_confidence = re.compile(r'confidence =(.*)\n')
 
-    __slots__ = ['school', 'grade', 'name_score']
+    __slots__ = ['winStride', 'padding', 'scale', 'confidence']
 
     def __init__(self, line):
         # check whether line has a positive match with all of the regular expressions
