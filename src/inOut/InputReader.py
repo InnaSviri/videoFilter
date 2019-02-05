@@ -14,6 +14,10 @@ ap.add_argument("-v", "--video", type=bool,
                 help="whether output video is necessary")
 ap.add_argument("-o", "--output", type=str,
                 help="path to output ")
+ap.add_argument("-p", "--prototxt", required=True,
+	help="path to Caffe 'deploy' prototxt file")
+ap.add_argument("-m", "--model", required=True,
+	help="path to Caffe pre-trained model")
 args = vars(ap.parse_args())
 
 

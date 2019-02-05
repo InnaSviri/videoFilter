@@ -8,7 +8,7 @@ from inOut import OutputFormer
 from src.detection import people_detector
 from src.inOut.InputReader import InputReader
 
-CONFIG_PATH = 'C:/Users/Inna/PycharmProjects/videoFilter/resources'
+CONFIG_PATH = 'C:/Users/User/PycharmProjects/videoFilter/resources'
 
 
 
@@ -22,8 +22,6 @@ def get_one_decision(inp):
         ret, frame = vs.read()
 
         if ret:
-            # and resize it to have a maximum width of 400 pixels
-            frame = imutils.resize(frame, width=min(400, frame.shape[1]))
             picks, image = people_detector.detect(frame, inp.params)
             if len(picks) != 0: output.add_pict(image, picks, i)
             del image
